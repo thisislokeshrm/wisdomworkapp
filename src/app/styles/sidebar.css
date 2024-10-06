@@ -1,0 +1,28 @@
+.sidebar {
+    width: 250px; /* Expanded width */
+  }
+  
+  .sidebar.collapsed {
+    width: 80px; /* Collapsed width */
+  }
+  
+  .menu-item {
+    transition: all 0.3s;
+  }
+  
+  .logo-section img {
+    max-width: 100%; /* Ensure logo doesn't overflow */
+  }
+  
+  .profile-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .collapse-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

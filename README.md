@@ -34,3 +34,45 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+
+## Project Structure
+/lms-nextjs
+├── /public                   # Static assets (images, fonts, etc.)
+│   ├── /images               # Images for the project
+│   └── favicon.ico           # Favicon
+├── /src                      # Main source folder
+│   ├── /app                  # App directory for pages and components
+│   │   ├── /api              # API routes (serverless functions)
+│   │   ├── /components       # Reusable components
+│   │   │   ├── /common       # Common UI components (buttons, inputs, etc.)
+│   │   │   ├── /layouts      # Layout components (header, footer, etc.)
+│   │   │   └── /modals       # Modal components
+│   │   ├── /context          # Context providers for state management
+│   │   │   ├── AuthContext.tsx # Authentication context
+│   │   │   └── CourseContext.tsx # Course context
+│   │   ├── /hooks            # Custom hooks
+│   │   │   └── useAuth.ts    # Hook for authentication
+│   │   ├── /interfaces        # TypeScript interfaces
+│   │   │   ├── Course.ts      # Course interface
+│   │   │   ├── User.ts        # User interface
+│   │   │   └── ...            # Other interfaces
+│   │   ├── /middleware        # Middleware functions
+│   │   ├── /styles           # Global styles (Tailwind CSS)
+│   │   │   ├── globals.css     # Global CSS file
+│   │   │   └── tailwind.css    # Tailwind CSS setup
+│   │   ├── /layout.tsx       # Main layout for the app
+│   │   ├── /page.tsx         # Default landing page (index)
+│   │   ├── /login             # Login page
+│   │   ├── /dashboard         # Dashboard for students/teachers
+│   │   └── /[courseId]       # Dynamic course page
+│   ├── /utils                # Utility functions and helpers
+│   │   └── firebase.ts        # Firebase configuration and functions
+├── .env                      # Environment variables
+├── .eslintrc.json            # ESLint configuration
+├── .gitignore                # Git ignore file
+├── package.json              # Project dependencies and scripts
+├── tailwind.config.js        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # Project documentation

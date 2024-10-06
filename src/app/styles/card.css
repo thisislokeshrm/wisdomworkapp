@@ -1,0 +1,16 @@
+.dashboard-box {
+    transition: transform 0.3s ease;
+  }
+  
+  .dashboard-box:hover {
+    transform: scale(1.05);
+  }
+  
+  .card {
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
