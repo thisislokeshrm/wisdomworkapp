@@ -1,14 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-// next.config.js
-
-module.exports = {
+export default {
     reactStrictMode: true,
+    // other config...
     eslint: {
         ignoreDuringBuilds: true,
-    },
-}
-
-
-export default nextConfig;
+    }
+  };
+  
