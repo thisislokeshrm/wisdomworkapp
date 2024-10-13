@@ -11,9 +11,9 @@ const StudentDashboard = () => {
   // States
   const [view, setView] = useState<'dashboard' | 'courses' | 'projects' | 'jobs'>('dashboard');
   const [highlightedCard, setHighlightedCard] = useState<'courses' | 'projects' | 'jobs' | null>(null);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [projects, setProjects] = useState<any[]>([]);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]); // Corrected type
+  const [projects, setProjects] = useState<any[]>([]); // Corrected type
+  const [jobs, setJobs] = useState<any[]>([]); // Corrected type
 
   // Fetch Data from Firestore
   useEffect(() => {
@@ -37,7 +37,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="dashboard-container flex">
-      <Sidebar />
+      <Sidebar tabs={[]} profilePic={''} userName={''} userLocation={''} logoSrc={''} />
       <div className="dashboard-content w-full p-6">
         {view === 'dashboard' && (
           <div>

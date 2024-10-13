@@ -1,13 +1,18 @@
 // src/components/layouts/Sidebar.tsx
 "use client";
 
-import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
+import { AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState } from 'react'; // Removed Key
 import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { signOut } from 'firebase/auth'; 
 import { auth } from '../../../utils/firebase'; 
+import Image from 'next/image'; // Import Image from next/image
 
 interface SidebarProps {
-  tabs: { name: string; path: string; icon: ReactElement<any, string | JSXElementConstructor<any>> | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }[];
+  tabs: { 
+    name: string; 
+    path: string; 
+    icon: ReactElement | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; // Removed any
+  }[];
   profilePic: string;
   userName: string;
   userLocation: string;
@@ -28,12 +33,12 @@ const Sidebar: React.FC<SidebarProps> = ({ tabs, profilePic, userName, userLocat
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''} bg-black text-white h-screen flex flex-col justify-between`}>
       {/* Logo Section */}
       <div className="logo-section p-6">
-        <img src={logoSrc || '/assets/images/logo.png'} alt="Logo" className="w-auto h-auto mx-auto" />
+        <Image src={logoSrc || '/assets/images/logo.png'} alt="Logo" className="w-auto h-auto mx-auto" width={100} height={100} /> {/* Use Image component */}
       </div>
 
       {/* Menu Items */}
       <ul className="menu flex-1 space-y-4">
-        {tabs.map((tab: { name: string; path: string; icon: ReactElement<any, string | JSXElementConstructor<any>> | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }) => (
+        {tabs.map((tab) => (
           <li 
             key={tab.name} 
             className={`menu-item p-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-700 rounded-lg ${pathname === tab.path ? 'bg-white text-black' : ''}`} // Compare pathname instead of asPath
@@ -48,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ tabs, profilePic, userName, userLocat
       {/* Profile Section */}
       <div className="profile-section p-6">
         <div className="flex items-center space-x-3">
-          <img src={profilePic || '/default-profile-pic.png'} alt="Profile" className="w-10 h-10 rounded-full" />
+          <Image src={profilePic || '/default-profile-pic.png'} alt="Profile" className="w-10 h-10 rounded-full" width={40} height={40} /> {/* Use Image component */}
           {!isCollapsed && (
             <div>
               <span className="font-semibold">{userName || 'Guest'}</span>
