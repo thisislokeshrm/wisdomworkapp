@@ -2,7 +2,7 @@
 "use client";
 
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { signOut } from 'firebase/auth'; 
 import { auth } from '../../../utils/firebase'; 
 
@@ -17,6 +17,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ tabs, profilePic, userName, userLocation, logoSrc }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // Get the current route pathname
 
   const handleSignOut = async () => {
     await signOut(auth);
@@ -35,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ tabs, profilePic, userName, userLocat
         {tabs.map((tab: { name: string; path: string; icon: ReactElement<any, string | JSXElementConstructor<any>> | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }) => (
           <li 
             key={tab.name} 
-            className={`menu-item p-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-700 rounded-lg ${router.asPath === tab.path ? 'bg-white text-black' : ''}`}
+            className={`menu-item p-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-700 rounded-lg ${pathname === tab.path ? 'bg-white text-black' : ''}`} // Compare pathname instead of asPath
             onClick={() => router.push(tab.path)}
           >
             <span>{tab.icon}</span>

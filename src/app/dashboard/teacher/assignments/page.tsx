@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../../../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Sidebar from '../../../components/layouts/Sidebar';
@@ -12,7 +12,7 @@ interface UserInfo {
 }
 
 interface Assessment {
-  id: string;
+  id?: string;
   title: string;
   dateShared: string;
   contact: string;
@@ -26,44 +26,41 @@ const AssessmentDashboard = () => {
   const [pendingAssessments, setPendingAssessments] = useState<number>(0);
   const [completedAssessments, setCompletedAssessments] = useState<number>(0);
   const [user] = useAuthState(auth);
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "",
-    location: "",
-    profilePic: "",
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // User information state
+  const [formData, setFormData] = useState<Assessment>({
+    title: "",
+    dateShared: "",
+    contact: "",
+    email: "",
+    status: "Pending",
   });
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null); // ID of the assignment being edited
 
   useEffect(() => {
-    if (user) {
-      // Fetch user info dynamically from Firestore based on logged-in user
-      const fetchUserInfo = async () => {
-        const userDoc = await getDocs(collection(db, "users"));
-        const userData = userDoc.docs
-          .find(doc => doc.id === user.uid)?.data() as UserInfo;
-
-        if (userData) {
-          setUserInfo({
-            name: userData.name || user.displayName || "User",
-            location: userData.location || "Unknown Location",
-            profilePic: userData.profilePic || "/default-profile-pic.jpg",
-          });
+    // Fetch user information dynamically from Firebase
+    const fetchUserInfo = async () => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid); // Assuming user data is stored in 'users' collection
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUserInfo(userDoc.data() as UserInfo);
         }
-      };
-      fetchUserInfo();
-    }
-  }, [user]);
+      }
+    };
 
-  useEffect(() => {
+    // Fetch assessments and calculate stats dynamically from Firebase
     const fetchAssessments = async () => {
       const assessmentsCollection = collection(db, "assessments");
-      const assessmentsSnapshot = await getDocs(assessmentsCollection);
-      const assessmentList = assessmentsSnapshot.docs.map((doc) => ({
+      const snapshot = await getDocs(assessmentsCollection);
+      const assessmentList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Assessment[];
 
       setAssessments(assessmentList);
 
-      // Calculate stats dynamically
+      // Calculate stats
       const pending = assessmentList.filter((a) => a.status === "Pending").length;
       const completed = assessmentList.filter((a) => a.status === "Submitted").length;
       setTotalAssessments(assessmentList.length);
@@ -71,8 +68,59 @@ const AssessmentDashboard = () => {
       setCompletedAssessments(completed);
     };
 
+    if (user) {
+      fetchUserInfo();
+      fetchAssessments();
+    }
+  }, [user]);
+
+  // Handle form change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle new assignment submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isEditing && selectedId) {
+      // Update existing assignment
+      const assignmentDocRef = doc(db, "assessments", selectedId);
+      await updateDoc(assignmentDocRef, { ...formData });
+      setIsEditing(false);
+      setSelectedId(null);
+    } else {
+      // Add new assignment
+      const assessmentsCollection = collection(db, "assessments");
+      await addDoc(assessmentsCollection, formData);
+    }
+
+    // Reset form and refetch assessments
+    setFormData({ title: "", dateShared: "", contact: "", email: "", status: "Pending" });
+    const fetchAssessments = async () => {
+      const assessmentsCollection = collection(db, "assessments");
+      const snapshot = await getDocs(assessmentsCollection);
+      const assessmentList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Assessment[];
+      setAssessments(assessmentList);
+    };
     fetchAssessments();
-  }, []);
+  };
+
+  // Handle assignment edit
+  const handleEdit = (assessment: Assessment) => {
+    setFormData(assessment);
+    setIsEditing(true);
+    setSelectedId(assessment.id!); // Use non-null assertion for the ID
+  };
+
+  if (!userInfo) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex">
@@ -94,7 +142,7 @@ const AssessmentDashboard = () => {
       />
 
       {/* Main Content */}
-      <div className="dashboard-content w-full p-6  bg-[#eceff3]">
+      <div className="dashboard-content w-full p-6 ml-64 bg-[#eceff3]">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
@@ -134,6 +182,66 @@ const AssessmentDashboard = () => {
           </div>
         </div>
 
+        {/* Assignment Form */}
+        <div className="bg-white p-6 rounded shadow mb-6">
+          <h2 className="font-bold text-xl mb-4">{isEditing ? "Edit Assignment" : "Create New Assignment"}</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              />
+              <input
+                type="date"
+                name="dateShared"
+                value={formData.dateShared}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              />
+              <input
+                type="text"
+                name="contact"
+                placeholder="Contact"
+                value={formData.contact}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              />
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              >
+                <option value="Pending">Pending</option>
+                <option value="Submitted">Submitted</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="bg-orange-500 text-white px-4 py-2 rounded mt-4"
+            >
+              {isEditing ? "Update Assignment" : "Create Assignment"}
+            </button>
+          </form>
+        </div>
+
         {/* Students Table */}
         <div className="bg-white p-6 rounded shadow">
           <h2 className="font-bold text-xl mb-4">All Students</h2>
@@ -145,6 +253,7 @@ const AssessmentDashboard = () => {
                 <th className="border-b py-2 px-4">Contact</th>
                 <th className="border-b py-2 px-4">Email</th>
                 <th className="border-b py-2 px-4">Status</th>
+                <th className="border-b py-2 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -163,16 +272,19 @@ const AssessmentDashboard = () => {
                       {assessment.status}
                     </span>
                   </td>
+                  <td className="border-b py-2 px-4">
+                    <button
+                      onClick={() => handleEdit(assessment)}
+                      className="text-blue-500"
+                    >
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        {/* New Assignment Button */}
-        <button className="bg-orange-500 text-white px-4 py-2 rounded mt-4">
-          New Assignment
-        </button>
       </div>
     </div>
   );
