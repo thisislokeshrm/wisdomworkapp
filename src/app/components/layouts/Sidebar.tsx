@@ -1,11 +1,20 @@
+// src/components/layouts/Sidebar.tsx
 "use client";
 
-import { useState } from 'react';
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth'; 
 import { auth } from '../../../utils/firebase'; 
 
-const Sidebar = () => {
+interface SidebarProps {
+  tabs: { name: string; path: string; icon: ReactElement<any, string | JSXElementConstructor<any>> | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }[];
+  profilePic: string;
+  userName: string;
+  userLocation: string;
+  logoSrc: string;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ tabs, profilePic, userName, userLocation, logoSrc }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const router = useRouter();
 
@@ -14,30 +23,19 @@ const Sidebar = () => {
     router.push('/login');
   };
 
-  const tabs = [
-    { name: 'Dashboard', icon: '🏠', path: '/dashboard/student' },
-    { name: 'Courses', icon: '📚', path: '/dashboard/courses' },
-    { name: 'Project', icon: '📝', path: '/dashboard/projects' },
-    { name: 'Assessment', icon: '📂', path: '/dashboard/assignments' },
-    { name: 'Freelance', icon: '💼', path: '/dashboard/freelancing' },
-    { name: 'Hackathons', icon: '🏆', path: '/dashboard/hackathons' },
-    { name: 'Blogs', icon: '✍️', path: '/dashboard/blogs' },
-    { name: 'Help', icon: '❓', path: '/dashboard/help' },
-  ];
-
   return (
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''} bg-black text-white h-screen flex flex-col justify-between`}>
-      {/* Logo */}
+      {/* Logo Section */}
       <div className="logo-section p-6">
-        <img src="/logo.png" alt="Company Logo" className="w-20 h-20 mx-auto" />
+        <img src={logoSrc || '/assets/images/logo.png'} alt="Logo" className="w-auto h-auto mx-auto" />
       </div>
 
       {/* Menu Items */}
       <ul className="menu flex-1 space-y-4">
-        {tabs.map((tab) => (
+        {tabs.map((tab: { name: string; path: string; icon: ReactElement<any, string | JSXElementConstructor<any>> | string | number | bigint | boolean | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }) => (
           <li 
             key={tab.name} 
-            className={`menu-item p-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-700 rounded-lg ${router.pathname === tab.path ? 'bg-white text-black' : ''}`}
+            className={`menu-item p-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-700 rounded-lg ${router.asPath === tab.path ? 'bg-white text-black' : ''}`}
             onClick={() => router.push(tab.path)}
           >
             <span>{tab.icon}</span>
@@ -49,14 +47,15 @@ const Sidebar = () => {
       {/* Profile Section */}
       <div className="profile-section p-6">
         <div className="flex items-center space-x-3">
-          <img src="/profile-pic.png" alt="Profile" className="w-10 h-10 rounded-full" />
+          <img src={profilePic || '/default-profile-pic.png'} alt="Profile" className="w-10 h-10 rounded-full" />
           {!isCollapsed && (
             <div>
-              <span className="font-semibold">Yuvraj</span>
-              <p className="text-gray-400 text-sm">Bengaluru</p>
+              <span className="font-semibold">{userName || 'Guest'}</span>
+              <p className="text-gray-400 text-sm">{userLocation || 'Unknown Location'}</p>
             </div>
           )}
         </div>
+
         {/* Settings & Logout */}
         <div className="settings-logout mt-4 space-y-3">
           <button className="w-full flex items-center space-x-3 text-left hover:bg-gray-700 p-2 rounded-lg">

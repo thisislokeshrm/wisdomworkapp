@@ -12,6 +12,8 @@ const SignUp = () => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false); // State to control password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false); // State to control confirm password visibility
   const router = useRouter();
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
@@ -43,20 +45,20 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff' }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff', marginLeft:'5%' }}>
       {/* Left Side: Image and Text */}
       <div style={{ flex: 1, position: 'relative', backgroundColor: '#fff', height: '100%' }}>
         <div style={{ position: 'absolute', top: '15%', left: '20%', transform: 'translate(-50%, -50%)', textAlign: 'left' }}>
           <h1 style={{ color: '#FF7A00', fontSize: '3rem', fontWeight: 'bold' }}>ONLINE</h1>
           <h1 style={{ color: '#000', fontSize: '3rem', fontWeight: 'bold' }}>LEARNING</h1>
         </div>
-        <div style={{ backgroundImage: 'url(/assets/images/online-learning.png)', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: '70%', width: '100%', marginTop: '10%' }} />
+        <div style={{ backgroundImage: 'url(/assets/images/online-learning.png)', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', height: '70%', width: '95%', marginTop: '30%' }} />
       </div>
 
       {/* Right Side: Sign Up Form */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
-        <form onSubmit={handleSignUp} style={{ width: '100%', maxWidth: '500px', padding: '20px', backgroundColor: '#fff', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '20px' }}>
-          <h2 style={{ color: '#000', fontSize: '2rem', marginBottom: '10px' }}>Sign Up</h2>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
+        <form onSubmit={handleSignUp} style={{ height:'100%', maxHeight: '800px', width: '100%', maxWidth: '600px', padding: '20px', backgroundColor: '#fff', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '20px' }}>
+          <h2 style={{ color: '#000', fontSize: '2rem', marginBottom: '10px', paddingTop:'120px' }}>Sign Up</h2>
           <p style={{ color: '#000', fontSize: '1rem', marginBottom: '20px' }}>
             Already have an account?{' '}
             <span 
@@ -90,29 +92,41 @@ const SignUp = () => {
             required
             style={{ width: '100%', padding: '12px', margin: '10px 0', borderRadius: '8px', border: '1px solid #E5E5E5' }}
           />
+          
+          {/* Password Input */}
           <div style={{ position: 'relative' }}>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'} // Toggle between text and password
               placeholder="Create your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               style={{ width: '100%', padding: '12px', margin: '10px 0', borderRadius: '8px', border: '1px solid #E5E5E5' }}
             />
-            <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
+            <span
+              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}
+              onMouseEnter={() => setShowPassword(true)} // Show password on hover
+              onMouseLeave={() => setShowPassword(false)} // Hide password when not hovering
+            >
               👁️
             </span>
           </div>
+
+          {/* Confirm Password Input */}
           <div style={{ position: 'relative' }}>
             <input
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'} // Toggle between text and password
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               style={{ width: '100%', padding: '12px', margin: '10px 0', borderRadius: '8px', border: '1px solid #E5E5E5' }}
             />
-            <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
+            <span
+              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}
+              onMouseEnter={() => setShowConfirmPassword(true)} // Show confirm password on hover
+              onMouseLeave={() => setShowConfirmPassword(false)} // Hide confirm password when not hovering
+            >
               👁️
             </span>
           </div>

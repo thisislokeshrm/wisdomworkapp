@@ -25,9 +25,9 @@ const Login = () => {
         if (userData.role === 'student') {
           router.push('/dashboard/student');
         } else if (userData.role === 'teacher') {
-          router.push('/teacher-dashboard');
+          router.push('/dashboard/teacher');
         } else if (userData.role === 'admin') {
-          router.push('/admin-dashboard');
+          router.push('/dashboard/admin');
         }
       }
     } catch (error) {
@@ -46,11 +46,11 @@ const Login = () => {
       if (docSnap.exists()) {
         const userData = docSnap.data();
         if (userData.role === 'student') {
-          router.push('/student-dashboard');
+          router.push('/dashboard/student');
         } else if (userData.role === 'teacher') {
-          router.push('/teacher-dashboard');
+          router.push('/dashboard/teacher');
         } else if (userData.role === 'admin') {
-          router.push('/admin-dashboard');
+          router.push('/dashboard/admin');
         }
       }
     } catch (error) {
@@ -59,20 +59,20 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff' }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff', marginLeft:'5%'}}>
       {/* Left Side: Image and Text */}
       <div style={{ flex: 1, position: 'relative', backgroundColor: '#fff', height: '100%' }}>
-        <div style={{ position: 'absolute', top: '15%', left: '20%', transform: 'translate(-50%, -50%)', textAlign: 'left' }}>
+        <div style={{ position: 'absolute', top: '15%', left: '20%', transform: 'translate(-50%, -50%)', textAlign: 'left', }}>
           <h1 style={{ color: '#FF7A00', fontSize: '3rem', fontWeight: 'bold' }}>ONLINE</h1>
           <h1 style={{ color: '#000', fontSize: '3rem', fontWeight: 'bold' }}>LEARNING</h1>
         </div>
-        <div style={{ backgroundImage: 'url(/assets/images/online-learning.png)', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: '70%', width: '100%', marginTop: '10%' }} />
+        <div style={{ backgroundImage: 'url(../../assets/images/online-learning.png)', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: '', height: '70%', width: '95%', marginTop: '30%' }} />
       </div>
 
       {/* Right Side: Login Form */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
-        <form onSubmit={handleLogin} style={{ width: '100%', maxWidth: '500px', padding: '20px', backgroundColor: '#fff', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '20px' }}>
-          <h2 style={{ color: '#000', fontSize: '2rem', marginBottom: '10px' }}>Log in</h2>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px'}}>
+        <form onSubmit={handleLogin} style={{ height:'100%', maxHeight: '800px', width: '100%', maxWidth: '600px', padding: '20px', backgroundColor: '#fff', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '20px' }}>
+          <h2 style={{ color: '#000', fontSize: '2rem', marginBottom: '10px', paddingTop:'120px'}}>Log in</h2>
           <p style={{ color: '#000', fontSize: '1rem', marginBottom: '20px' }}>
             Never had a chance to?{' '}
             <span 
@@ -126,8 +126,8 @@ const Login = () => {
             onClick={handleGoogleLogin}
             style={{ width: '100%', padding: '12px', backgroundColor: '#fff', border: '1px solid #E5E5E5', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
-            <img src="/assets/images/google-icon.png" alt="Google Icon" style={{ width: '20px', marginRight: '10px' }} />
-            Google
+            <img src="../../assets/images/google-logo.png" alt="Google Icon" style={{ width: '20px', marginRight: '10px' }} />
+            Sign in with Google
           </button>
         </form>
       </div>
