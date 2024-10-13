@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@firebasegen/default": "file:generated/javascript/default",
+    "@genkit-ai/ai": "^0.5.16",
+    "@genkit-ai/core": "^0.5.16",
+    "@genkit-ai/firebase": "^0.5.16",
+    "@genkit-ai/googleai": "^0.5.16",
     "@genkit-ai/vertexai": "^0.5.16",
     "firebase": "^10.14.0",
     "genkit-ai": "^0.0.1",
